@@ -1,1 +1,1 @@
-web: gunicorn "aq_dashboard.py"
+web: gunicorn aq_dashboard
