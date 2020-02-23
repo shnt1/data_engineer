@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flask app</title>
+    
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1 class="logo">J Wylie's Sprint Challenge Web App</h1>
+        
+      </div>
+    </header>
+    <div class="container">
+      {% block content %}
+    <ul>
+      {% for record in records %}
+      <li> UTC-Datetime = {{record.datetime}} :: Value = {{record.value}} </li>
+      {% endfor %}
+
+    </ul>
+      {% endblock %}
+    </div>
+  </body>
+</html>
