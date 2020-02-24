@@ -1,1 +1,1 @@
-web: gunicorn my_sprint_app:APP
+web: gunicorn "aq_dashboard:create_app()"
