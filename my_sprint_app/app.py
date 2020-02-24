@@ -95,7 +95,7 @@ def create_app():
         DB.session.commit()
 
         return root()
-
+    return APP
 
 APP = Flask(__name__)
 APP.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
