@@ -1,1 +1,1 @@
-web: gunicorn aq_dashboard
+web: gunicorn my_sprint_app:APP
