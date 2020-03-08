@@ -5,15 +5,15 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import json
 from flask import Response
 from flask import request
-from flask_cors import CORS
+
 from flask_api import FlaskAPI
 import requests
-import FlaskJSON
+
 
 
 def create_app():
     APP = Flask(__name__)
-    json = FlaskJSON(APP)
+    
     CORS(APP)
     APP.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///salty (2).db'
     APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -108,10 +108,10 @@ def create_app():
 # create route that displays the cities and stats
     @APP.route('/test_api',methods=['GET','POST'])            
     def test_api():                                           
-        uploaded_file = request.files['salty.json']
+        uploaded_file = request.files['filename']
         data = json.load(request.files['data'])
         filename = secure_filename(uploaded_file.filename)
-        uploaded_file.save(os.path.join('path/where/to/save', filename))
+        uploaded_file.save(os.path.join('/home/iesouskurios/lambda/sprint2/my_sprint_app/', filename))
         print(data)
         return 'success'
 
