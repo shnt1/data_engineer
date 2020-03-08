@@ -6,11 +6,13 @@ from flask import json
 from flask import Response
 from flask import request
 import requests
+from flask_cors import CORS
 
 
 
 def create_app():
     APP = Flask(__name__)
+    CORS(APP)
     APP.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///salty (2).db'
     APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     DB = SQLAlchemy(APP)
