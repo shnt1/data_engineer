@@ -5,8 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import json
 from flask import Response
 from flask import request
-
-from flask_api import FlaskAPI
 import requests
 
 
