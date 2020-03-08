@@ -11,8 +11,6 @@ import requests
 
 def create_app():
     APP = Flask(__name__)
-    
-    CORS(APP)
     APP.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///salty (2).db'
     APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     DB = SQLAlchemy(APP)
