@@ -2,16 +2,23 @@
 
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from .openaq import OpenAQ
+from flask import json
+from flask import Response
+from flask import request
+from flask_cors import CORS
+from flask_api import FlaskAPI
 import requests
+import FlaskJSON
 
 
 def create_app():
     APP = Flask(__name__)
+    json = FlaskJSON(APP)
+    CORS(APP)
     APP.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///salty (2).db'
     APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     DB = SQLAlchemy(APP)
-    API = OpenAQ()
+    
 
     class User(DB.Model):
 
@@ -27,25 +34,6 @@ def create_app():
 
 
 
-# function for getting utc_pm for Los Angeles
-    def utc_and_pm(city='Los Angeles', parameter='pm25'):
-        status, body = API.measurements(city=city, parameter=parameter)
-        values = []
-    # print(status, body)
-        for result in body['results']:
-            date_utc = result['date']['utc']
-            value = result['value']
-            values.append((date_utc, value))
-        return values
-
-    def get_city():
-        status, resp = API.cities()
-        city_values = []
-        for result in resp['results']:
-            city = result['city']
-            city_values.append(city)
-        return city_values
-
 
 # create default path for app to list top 10 most recent entries in openaq
     @APP.route('/')
@@ -55,20 +43,77 @@ def create_app():
                                title='Top 100 Saltiest Hackers',
                                records=records)
 
+    @APP.route("/uploadFiles", methods=['POST', 'GET'])
+
+    def upload_file():
+        """upload file to the server"""
+        response_dict = {}
+        error_files = ""
+        new_filename = ""
+
+        try:
+            new_filename = request.form['FILE_NAME']
+            received_files = request.files.getlist(FILES_RECEIVED)
+            for each_file in received_files:
+                each_file_name = each_file.filename
+                try:
+                    each_file.save(os.path.join(".", new_filename + each_file.filename.replace(" ", "")))
+                except RuntimeError as err:
+                    print("\nError in saving file: %s :: %s", each_file.filename, err)
+                    error_files = error_files + "," + each_file.filename
+
+            response_dict[STATUS] = "true"
+            response_dict[ERROR_FILES_LIST] = error_files
+            js_dump = json.dumps(response_dict)
+            resp = Response(js_dump, status=200, mimetype='application/json')
+
+        except RuntimeError as err:
+            response_dict = {'error': 'error occured on server side. Please try again'}
+            js_dump = json.dumps(response_dict)
+            resp = Response(js_dump, status=500, mimetype='application/json')
+        return resp
 
 # create another route that user may type in to get list of top offenders
-    @APP.route('/topoffend')
-    def topten():
-        records = Record.query.filter(Record.value >= 10.0).all()
-        return render_template('topoffend.html',
-                               title='Top Offenders', records=records)
+    @APP.route('/getJsonFromFile/<filename>', methods=['GET', 'POST'])
+    def get_json_response(filename):
+        labels_dict = {}
+        response_dict = {}
+        try:
+            with open(filename, 'r') as labels:
+                labels_dict = json.load(labels)
+
+                response_dict[STATUS] = "true"
+                response_dict["labels_mapping"] = labels_dict
+                js_dump = json.dumps(response_dict)
+                resp = Response(js_dump, status=200,
+                                mimetype='application/json')
+
+        except FileNotFoundError as err:
+            response_dict = {'error': 'file not found in server'}
+            js_dump = json.dumps(response_dict)
+            resp = Response(js_dump, status=500,
+                            mimetype='application/json')
+
+        except RuntimeError as err:
+            response_dict = {'error': 'error occured on server side. Please try again'}
+            js_dump = json.dumps(resonse_dict)
+            resp = Response(js_dump, status=500, 
+                            mimetype='application/json')
+
+        return resp
+
+          
 
 
 # create route that displays the cities and stats
-    @APP.route('/cities')
-    def cities():
-        records = City.query.all()
-        return render_template('cities.html', title='cities', records=records)
+    @APP.route('/test_api',methods=['GET','POST'])            
+    def test_api():                                           
+        uploaded_file = request.files['salty.json']
+        data = json.load(request.files['data'])
+        filename = secure_filename(uploaded_file.filename)
+        uploaded_file.save(os.path.join('path/where/to/save', filename))
+        print(data)
+        return 'success'
 
     # create route to get most recent data from openaq
     @APP.route('/refresh')
