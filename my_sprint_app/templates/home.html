@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html lang=en>
   <head>
-    </head>
-  <body>
+    <title>Flask app</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </head>
+  <body style="background-color:powderblue;">
 
+    <nav>
+      <a href="/" class="btn btn-dark"><span>Back to Home</span></a>
+
+      <!-- responsive-->
+      <a href="/topoffend" class="btn btn-info">*Coming soon, click for sweetest hackers!</a>
+     
+      
+    </nav>
     <header>
       <div class="container">
-        
+        <h1 class="logo">Flask App to return top 100 Saltiest Hackers</h1>
         
         
       </div>
@@ -15,7 +25,7 @@
       {% block content %}
     <ul>
       {% for record in records %}
-      {"rank":{{record.rank}}, "user":"{{record.user}}", "salt_score":{{record.salt_score}}, "saltiest_comment":"{{record.saltiest_comment}}"}
+      <li> Rank = {{record.rank}} :: User = {{record.user}} :: Salty Score = {{record.salt_score}} :: Saltiest Comment = {{record.saltiest_comment}} </li>
       {% endfor %}
 
     </ul>
