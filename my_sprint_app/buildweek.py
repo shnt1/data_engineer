@@ -53,11 +53,19 @@ def create_app():
 
 
 
-    @APP.route('/showjson')
-    def showjson():
+    @APP.route('/showjson_salty')
+    def showjson1():
         salty = pd.read_json('my_sprint_app/salty.json')
-        to_json = salty.to_json()
-        return to_json
+        tidy_salty = salty.T
+        to_json1 = tidy_salty.to_json()
+        return to_json1
+
+    @APP.route('/showjson_sweet')
+    def showjson2():
+        sweet = pd.read_json('my_sprint_app/sweet.json')
+        tidy_sweet = sweet.T
+        to_json2 = tidy_sweet.to_json()
+        return to_json2    
 
     @APP.route("/getJsonFromFile/<filename>", methods=['GET'])
     def get_json_response(filename):
